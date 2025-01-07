@@ -8,6 +8,7 @@ from services.tts import generate_tts_files
 from services.image import generate_image
 from services.video import overlay_image_and_text, create_video_from_image_and_audio, merge_videos
 from services.upload import upload_to_google_drive, authenticate_with_drive
+from services.bgm import add_bgm_to_video
 
 app = FastAPI()
 
@@ -61,14 +62,23 @@ async def process_script(data: ScriptInput):
                 "video_file": video_file_path
             })
 
-        final_file_name = f"{data.user_id}_{timestamp}.mp4"
-        final_video_path = os.path.join(temp_dir, final_file_name)
+        final_video_path = os.path.join(temp_dir, "final_video.mp4")
         merge_videos(video_files, final_video_path, temp_dir)
+
+        # 브금 추가
+        bgm_path = "resource/bgm.mp3"
+        final_video_with_bgm = os.path.join(temp_dir, f"{data.user_id}_{timestamp}.mp4")
+        add_bgm_to_video(
+            final_video_path, 
+            bgm_path, 
+            final_video_with_bgm,
+            volume = 0.1
+            )
 
         credentials_json = "credentials.json"
         token_file = "token.json"
         drive_service = authenticate_with_drive(credentials_json, token_file)
-        drive_file_id = upload_to_google_drive(drive_service, final_video_path, final_file_name)
+        drive_file_id = upload_to_google_drive(drive_service, final_video_with_bgm, f"{data.user_id}_{timestamp}.mp4")
         
         return {
             "results": results,
