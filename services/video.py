@@ -28,14 +28,14 @@ def overlay_image_and_text(
         text_height = text_bbox[3] - text_bbox[1]
         text_position = (
             (background.width - text_width) // 2,  # Center horizontally
-            200  # Vertical position near the top
+            400  # Vertical position near the top
         )
         draw.text(text_position, text, font=title_font, fill="black")
 
         # Add overlay image in the center
         overlay_position = (
             (background.width - overlay.width) // 2,  # Center horizontally
-            400  # Vertical position for the image
+            700  # Vertical position for the image
         )
         background.paste(overlay, overlay_position, overlay)
 
