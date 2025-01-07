@@ -2,6 +2,35 @@ import os
 import subprocess
 from PIL import Image, ImageDraw, ImageFont
 
+def wrap_text_for_image(text: str, font: ImageFont, max_width: int) -> str:
+    """
+    Wraps text to fit within the specified width in pixels.
+
+    :param text: The input text to wrap
+    :param font: The font used for rendering the text
+    :param max_width: The maximum width in pixels for each line
+    :return: The wrapped text with line breaks
+    """
+    lines = []
+    words = text.split(" ")
+    current_line = ""
+
+    for word in words:
+        # Check the width of the current line with the new word
+        test_line = f"{current_line} {word}".strip()
+        text_width = ImageDraw.Draw(Image.new("RGB", (1, 1))).textbbox((0, 0), test_line, font=font)[2]
+
+        if text_width <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word
+
+    if current_line:
+        lines.append(current_line)
+
+    return "\n".join(lines)
+
 def overlay_image_and_text(
     background_path, overlay_path, output_path, text
 ):
@@ -15,35 +44,41 @@ def overlay_image_and_text(
     try:
         # Load the background and overlay images
         background = Image.open(background_path).resize((720, 1280)).convert("RGBA")
-        overlay = Image.open(overlay_path).resize((500, 500)).convert("RGBA")
+        overlay = Image.open(overlay_path).resize((600, 600)).convert("RGBA")
 
         # Create a drawing object
         draw = ImageDraw.Draw(background)
 
         # Load font
-        title_font = ImageFont.truetype("NanumGothic.ttf", 48)
+        font = ImageFont.truetype("NanumGothic.ttf", 48)
+        max_width = background.width - 40  # 20 pixels padding on each side
 
-        text_bbox = draw.textbbox((0, 0), text, font=title_font)
+        # Wrap the text to fit the image
+        wrapped_text = wrap_text_for_image(text, font, max_width)
+
+        # Calculate text dimensions
+        text_bbox = draw.textbbox((0, 0), wrapped_text, font=font)
         text_width = text_bbox[2] - text_bbox[0]
         text_height = text_bbox[3] - text_bbox[1]
-        text_position = (
-            (background.width - text_width) // 2,  # Center horizontally
-            400  # Vertical position near the top
-        )
-        draw.text(text_position, text, font=title_font, fill="black")
+
+        # Center text horizontally and vertically
+        text_x = (background.width - text_width) // 2
+        text_y = 300
+
+        # Add wrapped text
+        draw.multiline_text((text_x, text_y), wrapped_text, font=font, fill="black", align="center")
 
         # Add overlay image in the center
-        overlay_position = (
-            (background.width - overlay.width) // 2,  # Center horizontally
-            700  # Vertical position for the image
-        )
-        background.paste(overlay, overlay_position, overlay)
+        overlay_x = (background.width - overlay.width) // 2  # Center horizontally
+        overlay_y = 600  # Vertical position for the image
+        background.paste(overlay, (overlay_x, overlay_y), overlay)
 
         # Save the final image
         background.save(output_path)
         print(f"Image saved to {output_path}")
     except Exception as e:
         print(f"Error creating layout: {e}")
+
 
 def get_audio_duration(audio_path):
     """
