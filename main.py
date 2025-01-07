@@ -34,7 +34,7 @@ async def process_script(data: ScriptInput):
             
             final_image_path = os.path.join(temp_dir, f"layout_{index + 1}.png")
             overlay_image_and_text(
-                background_path="background.jpg",
+                background_path="resource/background.png",
                 overlay_path=image_file_path,
                 output_path=final_image_path,
                 text=sentence
