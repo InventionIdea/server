@@ -51,14 +51,15 @@ def overlay_image_and_text(
         draw = ImageDraw.Draw(background)
 
         # Load font
-        title_font = ImageFont.truetype("NanumGothic.ttf", 60)
-        text_font = ImageFont.truetype("NanumGothic.ttf", 48)
+        title_font = ImageFont.truetype("resource/anemone.ttf", 55)
+        text_font = ImageFont.truetype("resource/anemone.ttf", 48)
         max_width = background.width - 40  # 20 pixels padding on each side
 
         # Add the title at the top, left-aligned with some padding
-        title_padding = 30
-        title_x = title_padding
-        title_y = 150
+        title_bbox = draw.textbbox((0, 0), title, font=title_font)
+        title_width = title_bbox[2] - title_bbox[0]
+        title_x = (background.width - title_width) // 2
+        title_y = 155
         draw.text((title_x, title_y), title, font=title_font, fill="black")
 
         # Wrap the text to fit the image
