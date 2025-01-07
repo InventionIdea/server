@@ -50,7 +50,7 @@ async def process_script(data: ScriptInput):
                 final_image_path, 
                 tts_file_path, 
                 video_file_path,
-                shorten_by = 0.5            
+                shorten_by = 0.2
                 )
 
             video_files.append(video_file_path)
