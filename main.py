@@ -13,6 +13,7 @@ app = FastAPI()
 
 class ScriptInput(BaseModel):
     user_id: str
+    title: str
     script: str
 
 @app.post("/process-script/")
@@ -37,7 +38,8 @@ async def process_script(data: ScriptInput):
                 background_path="resource/background.png",
                 overlay_path=image_file_path,
                 output_path=final_image_path,
-                text=sentence
+                text=sentence,
+                title = data.title
             )
             
             # TTS 파일 생성 & 기존 이미지와 TTS 파일 결합하여 동영상 문장별 동영상 생성

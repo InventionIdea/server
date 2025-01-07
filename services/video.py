@@ -32,7 +32,7 @@ def wrap_text_for_image(text: str, font: ImageFont, max_width: int) -> str:
     return "\n".join(lines)
 
 def overlay_image_and_text(
-    background_path, overlay_path, output_path, text
+    background_path, overlay_path, output_path, text, title
 ):
     """
     Creates a composite image with a background, overlay image, and text.
@@ -40,6 +40,7 @@ def overlay_image_and_text(
     :param overlay_path: Path to the overlay image
     :param output_path: Path to save the resulting image
     :param text: Text to display
+    :param title: 윗부분에 들어갈 제목
     """
     try:
         # Load the background and overlay images
@@ -50,14 +51,21 @@ def overlay_image_and_text(
         draw = ImageDraw.Draw(background)
 
         # Load font
-        font = ImageFont.truetype("NanumGothic.ttf", 48)
+        title_font = ImageFont.truetype("NanumGothic.ttf", 60)
+        text_font = ImageFont.truetype("NanumGothic.ttf", 48)
         max_width = background.width - 40  # 20 pixels padding on each side
 
+        # Add the title at the top, left-aligned with some padding
+        title_padding = 30
+        title_x = title_padding
+        title_y = 150
+        draw.text((title_x, title_y), title, font=title_font, fill="black")
+
         # Wrap the text to fit the image
-        wrapped_text = wrap_text_for_image(text, font, max_width)
+        wrapped_text = wrap_text_for_image(text, text_font, max_width)
 
         # Calculate text dimensions
-        text_bbox = draw.textbbox((0, 0), wrapped_text, font=font)
+        text_bbox = draw.textbbox((0, 0), wrapped_text, font=text_font)
         text_width = text_bbox[2] - text_bbox[0]
         text_height = text_bbox[3] - text_bbox[1]
 
@@ -66,7 +74,7 @@ def overlay_image_and_text(
         text_y = 300
 
         # Add wrapped text
-        draw.multiline_text((text_x, text_y), wrapped_text, font=font, fill="black", align="center")
+        draw.multiline_text((text_x, text_y), wrapped_text, font=text_font, fill="black", align="center")
 
         # Add overlay image in the center
         overlay_x = (background.width - overlay.width) // 2  # Center horizontally
