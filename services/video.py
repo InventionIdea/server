@@ -70,7 +70,7 @@ def overlay_image_and_text(
 
         # Add overlay image in the center
         overlay_x = (background.width - overlay.width) // 2  # Center horizontally
-        overlay_y = 600  # Vertical position for the image
+        overlay_y = text_y + text_height + 100  # Vertical position for the image
         background.paste(overlay, (overlay_x, overlay_y), overlay)
 
         # Save the final image
