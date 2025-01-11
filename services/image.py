@@ -33,7 +33,7 @@ def generate_image(prompt: str, index: int, output_dir: str) -> str:
     
     # Define the image file path
     output_path = os.path.join(output_dir, f"image_{index + 1}.png")
-    url = f"https://image.pollinations.ai/prompt/{translated_prompt}"
+    url = f"https://image.pollinations.ai/prompt/{translated_prompt}?nologo=true"
     
     try:
         # Fetch the image from the API
