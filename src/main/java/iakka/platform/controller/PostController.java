@@ -2,7 +2,9 @@ package iakka.platform.controller;
 
 import iakka.platform.model.Post;
 import iakka.platform.repository.PostRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @RestController
@@ -24,10 +26,33 @@ public class PostController {
         return postRepository.save(post);
     }
 
-    @PostMapping("/{id}/like")
-    public Post likePost(@PathVariable Long id) {
-        Post post = postRepository.findById(id).orElseThrow();
-        post.setLikes(post.getLikes() + 1);
-        return postRepository.save(post);
+    @PutMapping("/{id}")
+    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post postDetails) {
+        return postRepository.findById(id)
+                .map(post -> {
+                    post.setTitle(postDetails.getTitle());
+                    post.setContent(postDetails.getContent());
+                    return ResponseEntity.ok(postRepository.save(post));
+                }).orElse(ResponseEntity.notFound().build());
     }
+
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deletePost(@PathVariable Long id) {
+        return postRepository.findById(id)
+                .map(post -> {
+                    postRepository.delete(post);
+                    return ResponseEntity.noContent().build();
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+@PostMapping("/{id}/like")
+public ResponseEntity<Post> likePost(@PathVariable Long id) {
+    return postRepository.findById(id)
+            .map(post -> {
+                post.setLikes(post.getLikes() + 1);
+                return ResponseEntity.ok(postRepository.save(post));
+            }).orElse(ResponseEntity.notFound().build());
+}
 }
