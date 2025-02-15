@@ -1,7 +1,5 @@
-package iakka.platform.controller;
+package iakka.platform.post;
 
-import iakka.platform.model.Post;
-import iakka.platform.repository.PostRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;

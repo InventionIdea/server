@@ -1,9 +1,7 @@
-package iakka.platform.controller;
+package iakka.platform.comment;
 
-import iakka.platform.model.Comment;
-import iakka.platform.model.Post;
-import iakka.platform.repository.CommentRepository;
-import iakka.platform.repository.PostRepository;
+import iakka.platform.post.Post;
+import iakka.platform.post.PostRepository;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 

@@ -1,5 +1,6 @@
-package iakka.platform.model;
+package iakka.platform.post;
 
+import iakka.platform.comment.Comment;
 import jakarta.persistence.*;
 import java.util.List;
 

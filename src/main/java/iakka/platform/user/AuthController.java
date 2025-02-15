@@ -1,4 +1,4 @@
-package iakka.platform.controller;
+package iakka.platform.user;
 
 import org.springframework.web.bind.annotation.*;
 

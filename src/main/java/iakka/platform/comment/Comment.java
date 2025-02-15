@@ -1,5 +1,6 @@
-package iakka.platform.model;
+package iakka.platform.comment;
 
+import iakka.platform.post.Post;
 import jakarta.persistence.*;
 
 @Entity
