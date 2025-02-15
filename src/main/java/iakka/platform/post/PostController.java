@@ -1,5 +1,7 @@
 package iakka.platform.post;
 
+import iakka.platform.user.User;
+import iakka.platform.user.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,9 +11,11 @@ import java.util.List;
 @RequestMapping("/posts")
 public class PostController {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public PostController(PostRepository postRepository) {
+    public PostController(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -20,37 +24,43 @@ public class PostController {
     }
 
     @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        return postRepository.save(post);
+    public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest) {
+        if (postRequest.getAuthorId() == null) {
+            return ResponseEntity.badRequest().body("Error: authorId is required");
+        }
+
+        User author = userRepository.findById(postRequest.getAuthorId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + postRequest.getAuthorId()));
+
+        Post post = new Post();
+        post.setTitle(postRequest.getTitle());
+        post.setContent(postRequest.getContent());
+        post.setLikes(0);
+        post.setAuthor(author); // 👈 필수 값 추가!
+
+        return ResponseEntity.ok(postRepository.save(post));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post postDetails) {
-        return postRepository.findById(id)
-                .map(post -> {
-                    post.setTitle(postDetails.getTitle());
-                    post.setContent(postDetails.getContent());
-                    return ResponseEntity.ok(postRepository.save(post));
-                }).orElse(ResponseEntity.notFound().build());
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Post> likePost(@PathVariable Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        post.setLikes(post.getLikes() + 1);
+        return ResponseEntity.ok(postRepository.save(post));
     }
-
-    @Transactional
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletePost(@PathVariable Long id) {
-        return postRepository.findById(id)
-                .map(post -> {
-                    postRepository.delete(post);
-                    return ResponseEntity.noContent().build();
-                }).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-
-@PostMapping("/{id}/like")
-public ResponseEntity<Post> likePost(@PathVariable Long id) {
-    return postRepository.findById(id)
-            .map(post -> {
-                post.setLikes(post.getLikes() + 1);
-                return ResponseEntity.ok(postRepository.save(post));
-            }).orElse(ResponseEntity.notFound().build());
 }
+
+class PostRequest {
+    private String title;
+    private String content;
+    private Long authorId;
+
+    // Getters and Setters
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+    public Long getAuthorId() { return authorId; }
+    public void setAuthorId(Long authorId) { this.authorId = authorId; }
 }

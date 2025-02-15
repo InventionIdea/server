@@ -1,8 +1,7 @@
 package iakka.platform.post;
 
-import iakka.platform.comment.Comment;
+import iakka.platform.user.User;
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -12,11 +11,11 @@ public class Post {
     private Long id;
     private String title;
     private String content;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
-
     private int likes;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -25,8 +24,8 @@ public class Post {
     public void setTitle(String title) { this.title = title; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
-    public List<Comment> getComments() { return comments; }
-    public void setComments(List<Comment> comments) { this.comments = comments; }
     public int getLikes() { return likes; }
     public void setLikes(int likes) { this.likes = likes; }
+    public User getAuthor() { return author; }
+    public void setAuthor(User author) { this.author = author; }
 }

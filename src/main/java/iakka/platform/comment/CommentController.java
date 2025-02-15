@@ -2,7 +2,11 @@ package iakka.platform.comment;
 
 import iakka.platform.post.Post;
 import iakka.platform.post.PostRepository;
+import iakka.platform.user.User;
+import iakka.platform.user.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -10,21 +14,53 @@ import java.util.List;
 public class CommentController {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public CommentController(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentController(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
-    @GetMapping("/post/{postId}")
-    public List<Comment> getCommentsByPost(@PathVariable Long postId) {
-        return commentRepository.findAll();
+    @GetMapping
+    public ResponseEntity<?> getAllComments(@RequestParam Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        return ResponseEntity.ok(commentRepository.findByPost(post));
     }
 
-    @PostMapping("/post/{postId}")
-    public Comment addComment(@PathVariable Long postId, @RequestBody Comment comment) {
-        Post post = postRepository.findById(postId).orElseThrow();
+
+    @PostMapping
+    public ResponseEntity<?> createComment(@RequestBody CommentRequest commentRequest) {
+        if (commentRequest.getPostId() == null || commentRequest.getAuthorId() == null) {
+            return ResponseEntity.badRequest().body("Error: postId and authorId are required");
+        }
+
+        Post post = postRepository.findById(commentRequest.getPostId())
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        User author = userRepository.findById(commentRequest.getAuthorId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Comment comment = new Comment();
+        comment.setContent(commentRequest.getContent());
         comment.setPost(post);
-        return commentRepository.save(comment);
+        comment.setAuthor(author);
+
+        return ResponseEntity.ok(commentRepository.save(comment));
     }
+}
+
+class CommentRequest {
+    private Long postId;
+    private Long authorId;
+    private String content;
+
+    public Long getPostId() { return postId; }
+    public void setPostId(Long postId) { this.postId = postId; }
+    public Long getAuthorId() { return authorId; }
+    public void setAuthorId(Long authorId) { this.authorId = authorId; }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
 }
