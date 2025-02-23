@@ -5,6 +5,8 @@ FROM python:3.12
 WORKDIR /app
 
 # 3. 기본 패키지 업데이트 및 FFmpeg, ImageMagick 설치
+# ffmpef: 동영상 편집 소프트웨어
+# imagemagick: 이미지 편집 소프트웨어
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     imagemagick \
