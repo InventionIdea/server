@@ -3,7 +3,6 @@ import time
 import shutil
 from fastapi import FastAPI
 from pydantic import BaseModel
-from services.text import split_script_into_sentences
 from services.tts import generate_tts_files
 from services.image import generate_image
 from services.video import overlay_image_and_text, create_video_from_image_and_audio, merge_videos
@@ -15,7 +14,7 @@ app = FastAPI()
 class ScriptInput(BaseModel):
     user_id: str
     title: str
-    script: str
+    script: list[str]
 
 @app.post("/process-script/")
 async def process_script(data: ScriptInput):
@@ -28,9 +27,7 @@ async def process_script(data: ScriptInput):
     video_files = []
 
     try:
-        sentences = split_script_into_sentences(data.script)
-
-        for index, sentence in enumerate(sentences):  
+        for index, sentence in enumerate(data.script):  
             # 문장별 이미지 생성      
             image_file_path = generate_image(sentence, index, output_dir=temp_dir)
             
