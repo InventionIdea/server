@@ -1,4 +1,4 @@
-package iakka.platform.user;
+package iakka.platform.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

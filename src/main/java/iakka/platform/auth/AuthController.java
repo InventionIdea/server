@@ -1,5 +1,7 @@
-package iakka.platform.user;
+package iakka.platform.auth;
 
+import iakka.platform.user.User;
+import iakka.platform.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
