@@ -78,8 +78,6 @@ async def process_script(data: ScriptInput):
         drive_file_id = upload_to_google_drive(drive_service, final_video_with_bgm, f"{data.user_id}_{timestamp}.mp4")
         
         return {
-            "results": results,
-            "final_video": final_video_path,
             "drive_file_id": drive_file_id
             }
     finally:
