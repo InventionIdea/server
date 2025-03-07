@@ -18,9 +18,15 @@ class ScriptInput(BaseModel):
 
 @app.post("/process-script/")
 async def process_script(data: ScriptInput):
-    # Create a temporary directory for the user
+    # Cloudtype 환경에서 안전한 output 경로 설정
+    BASE_DIR = "/app"  # Cloudtype에서 `/app` 디렉토리는 쓰기 가능
+    OUTPUT_DIR = os.path.join(BASE_DIR, "output")
+
+    # output 디렉토리 존재하지 않으면 생성 (쓰기 권한 보장)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
     timestamp = int(time.time())
-    temp_dir = os.path.join("output", f"{data.user_id}_{timestamp}")
+    temp_dir = os.path.join(OUTPUT_DIR, f"{data.user_id}_{timestamp}")
     os.makedirs(temp_dir, exist_ok=True)
     
     results = []
