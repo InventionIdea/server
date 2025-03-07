@@ -18,21 +18,12 @@ class ScriptInput(BaseModel):
 
 @app.post("/process-script/")
 async def process_script(data: ScriptInput):
-    BASE_DIR = "/app"  # Cloudtype에서는 `/app` 디렉토리가 기본적으로 쓰기 가능
-    OUTPUT_DIR = os.path.join(BASE_DIR, "output")
-
-    # ✅ 폴더가 존재하면 소유권 변경
-    if os.path.exists(OUTPUT_DIR):
-        os.system(f"chown -R $(whoami) {OUTPUT_DIR}")  # 현재 사용자에게 소유권 변경
-        os.chmod(OUTPUT_DIR, 0o777)  # 모든 사용자 읽기/쓰기 가능
-
-    # ✅ 없으면 생성
-    else:
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
-        os.chmod(OUTPUT_DIR, 0o777)
-
+    # ✅ 안전한 쓰기 가능한 폴더 설정
+    OUTPUT_DIR = "/tmp"  # Cloudtype에서 쓰기 가능 경로
     timestamp = int(time.time())
     temp_dir = os.path.join(OUTPUT_DIR, f"{data.user_id}_{timestamp}")
+
+    # ✅ 폴더 생성 (쓰기 권한 보장됨)
     os.makedirs(temp_dir, exist_ok=True)
     
     results = []
