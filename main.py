@@ -18,12 +18,10 @@ class ScriptInput(BaseModel):
 
 @app.post("/process-script/")
 async def process_script(data: ScriptInput):
-    # ✅ 안전한 쓰기 가능한 폴더 설정
-    OUTPUT_DIR = "/tmp"  # Cloudtype에서 쓰기 가능 경로
+    # Create a temporary directory for the user
     timestamp = int(time.time())
-    temp_dir = os.path.join(OUTPUT_DIR, f"{data.user_id}_{timestamp}")
+    temp_dir = os.path.join("output", f"{data.user_id}_{timestamp}")
 
-    # ✅ 폴더 생성 (쓰기 권한 보장됨)
     os.makedirs(temp_dir, exist_ok=True)
     
     results = []
