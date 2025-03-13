@@ -2,6 +2,7 @@ package iakka.platform.post;
 
 import iakka.platform.user.User;
 import iakka.platform.user.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +49,33 @@ public class PostController {
 
         post.setLikes(post.getLikes() + 1);
         return ResponseEntity.ok(postRepository.save(post));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequest postRequest) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!post.getAuthor().getId().equals(postRequest.getAuthorId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: Only the author can update this post");
+        }
+
+        post.setTitle(postRequest.getTitle());
+        post.setContent(postRequest.getContent());
+        return ResponseEntity.ok(postRepository.save(post));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id, @RequestParam Long authorId) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!post.getAuthor().getId().equals(authorId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: Only the author can delete this post");
+        }
+
+        postRepository.delete(post);
+        return ResponseEntity.noContent().build();
     }
 }
 

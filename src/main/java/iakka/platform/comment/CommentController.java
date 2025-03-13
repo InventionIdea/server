@@ -4,6 +4,7 @@ import iakka.platform.post.Post;
 import iakka.platform.post.PostRepository;
 import iakka.platform.user.User;
 import iakka.platform.user.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +50,32 @@ public class CommentController {
         comment.setAuthor(author);
 
         return ResponseEntity.ok(commentRepository.save(comment));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateComment(@PathVariable Long id, @RequestBody CommentRequest commentRequest) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comment not found"));
+
+        if (!comment.getAuthor().getId().equals(commentRequest.getAuthorId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: Only the author can update this comment");
+        }
+
+        comment.setContent(commentRequest.getContent());
+        return ResponseEntity.ok(commentRepository.save(comment));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long id, @RequestParam Long authorId) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comment not found"));
+
+        if (!comment.getAuthor().getId().equals(authorId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: Only the author can delete this comment");
+        }
+
+        commentRepository.delete(comment);
+        return ResponseEntity.noContent().build();
     }
 }
 
