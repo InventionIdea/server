@@ -1,7 +1,16 @@
 ## ✅ 다음 업데이트 예정
-- 댓글 수정 및 삭제 기능
-- 게시글 수정 기능
 - JWT 인증 적용
+- 대댓글 기능 추가
+
+## 🚀 업데이트 내역 (2025-03-13)
+
+### 🔹 게시글(Post) 기능
+- 게시글 수정 (`PUT /posts/{id}`)
+- 게시글 삭제 (`DELETE /posts/{id}?authorId={authorId}`)
+
+### 🔹 댓글(Comment) 기능
+- 댓글 수정 (`PUT /comments/{id}`)
+- 댓글 삭제 (`DELETE /comments/{id}?authorId={authorId}`)
 
 ## 🚀 업데이트 내역 (2025-02-16)
 
