@@ -85,6 +85,12 @@ public class PostController {
         post.setLikes(post.getLikes() + 1);
         return ResponseEntity.ok(postRepository.save(post));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Post>> searchPosts(@RequestParam String keyword) {
+        List<Post> posts = postRepository.searchByKeyword(keyword);
+        return ResponseEntity.ok(posts);
+    }
 }
 
 class PostRequest {
