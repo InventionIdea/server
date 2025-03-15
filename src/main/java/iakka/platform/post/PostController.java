@@ -42,15 +42,6 @@ public class PostController {
         return ResponseEntity.ok(postRepository.save(post));
     }
 
-    @PostMapping("/{id}/like")
-    public ResponseEntity<Post> likePost(@PathVariable Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
-
-        post.setLikes(post.getLikes() + 1);
-        return ResponseEntity.ok(postRepository.save(post));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequest postRequest) {
         Post post = postRepository.findById(id)
@@ -76,6 +67,15 @@ public class PostController {
 
         postRepository.delete(post);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Post> likePost(@PathVariable Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        post.setLikes(post.getLikes() + 1);
+        return ResponseEntity.ok(postRepository.save(post));
     }
 }
 
