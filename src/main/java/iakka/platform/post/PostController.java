@@ -24,6 +24,14 @@ public class PostController {
         return postRepository.findAll();
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Post>> getPostsByUser(@PathVariable Long userId) {
+        if (!userRepository.existsById(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(postRepository.findByAuthorId(userId));
+    }
+
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest) {
         if (postRequest.getAuthorId() == null) {
@@ -37,7 +45,7 @@ public class PostController {
         post.setTitle(postRequest.getTitle());
         post.setContent(postRequest.getContent());
         post.setLikes(0);
-        post.setAuthor(author); // 👈 필수 값 추가!
+        post.setAuthor(author);
 
         return ResponseEntity.ok(postRepository.save(post));
     }
@@ -84,7 +92,6 @@ class PostRequest {
     private String content;
     private Long authorId;
 
-    // Getters and Setters
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public String getContent() { return content; }
