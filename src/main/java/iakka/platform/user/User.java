@@ -13,6 +13,7 @@ public class User {
     private Long id;
     private String username;
     private String password;
+    private int points;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Post> posts;
@@ -31,4 +32,8 @@ public class User {
     public void setPosts(List<Post> posts) { this.posts = posts; }
     public List<Comment> getComments() { return comments; }
     public void setComments(List<Comment> comments) { this.comments = comments; }
+    public int getPoints() { return points; }
+    public void setPoints(int points) { this.points = points; }
+    public void addPoints(int amount) { this.points += amount; }
+    public void deductPoints(int amount) { this.points -= amount; }
 }
