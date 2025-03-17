@@ -16,7 +16,7 @@ class ScriptInput(BaseModel):
     title: str
     script: list[str]
 
-@app.post("/process-script/")
+@app.post("/generate-video")
 async def process_script(data: ScriptInput):
     # Create a temporary directory for the user
     timestamp = int(time.time())
