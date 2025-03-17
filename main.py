@@ -1,7 +1,8 @@
 import os
 import time
 import shutil
-from fastapi import FastAPI
+import requests
+from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel
 from services.tts import generate_tts_files
 from services.image import generate_image
@@ -11,13 +12,27 @@ from services.bgm import add_bgm_to_video
 
 app = FastAPI()
 
+SPRING_SERVER_URL = "http://localhost:8080/ideas/update-file-id"
+
 class ScriptInput(BaseModel):
     user_id: str
     title: str
     script: list[str]
 
+def notify_spring_server(user_id: str, title: str, file_id: str):
+    payload = {
+        "user_id": user_id,
+        "title": title,
+        "file_id": file_id
+    }
+    try:
+        response = requests.post(SPRING_SERVER_URL, json=payload)
+        print(f"Spring server responded with: {response.status_code}")
+    except Exception as e:
+        print(f"Error notifying Spring server: {e}")
+
 @app.post("/generate-video")
-async def process_script(data: ScriptInput):
+async def generate_video(data: ScriptInput, background_tasks: BackgroundTasks):
     # Create a temporary directory for the user
     timestamp = int(time.time())
     temp_dir = os.path.join("output", f"{data.user_id}_{timestamp}")
@@ -77,6 +92,9 @@ async def process_script(data: ScriptInput):
         token_file = "token.json"
         drive_service = authenticate_with_drive(credentials_json, token_file)
         drive_file_id = upload_to_google_drive(drive_service, final_video_with_bgm, f"{data.user_id}_{timestamp}.mp4")
+
+        # 파일ID를 Srping 서버에 비동기적으로 전달
+        background_tasks.add_task(notify_spring_server, data.user_id, data.title, drive_file_id)
         
         return {
             "drive_file_id": drive_file_id
