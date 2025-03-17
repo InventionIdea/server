@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "idea")
+@Table(name = "ideas")
 public class Idea {
 
     @Id
@@ -20,7 +20,7 @@ public class Idea {
     @Column(nullable = false, length = 1000)
     private String script;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true)
     private String fileId;
 
     @Column(nullable = false)
