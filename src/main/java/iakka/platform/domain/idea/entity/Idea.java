@@ -1,7 +1,6 @@
 package iakka.platform.domain.idea.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ideas")
@@ -20,11 +19,8 @@ public class Idea {
     @Column(nullable = false, length = 1000)
     private String script;
 
-    @Column(nullable = true)
+    @Column
     private String fileId;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
 
     public Idea() {}
 
@@ -69,9 +65,5 @@ public class Idea {
 
     public void setFileId(String fileId) {
         this.fileId = fileId;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
     }
 }
