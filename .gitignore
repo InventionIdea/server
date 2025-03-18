@@ -4,7 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-src/main/java/iakka/platform/config/
+src/main/java/iakka/platform/config/WebClientConfig.java
+src/main/java/iakka/platform/config/SecurityConfig.java
+src/main/java/iakka/platform/config/WebSocketConfig.java
 
 ### STS ###
 .apt_generated
