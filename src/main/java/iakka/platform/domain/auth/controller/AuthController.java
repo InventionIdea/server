@@ -42,6 +42,8 @@ public class AuthController {
         User newUser = new User();
         newUser.setUsername(request.getUsername());
         newUser.setPassword(passwordEncoder.encode(request.getPassword())); // 비밀번호 암호화
+        newUser.setRealName(request.getRealName());
+        newUser.setPhoneNumber(request.getPhoneNumber());
         newUser.setPoints(0); // 기본 포인트 설정
 
         userRepository.save(newUser);

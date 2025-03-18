@@ -16,6 +16,9 @@ public class User {
     private String password; // 사용자 비밀번호
     private int points; // 사용자 포인트
 
+    private String realName;  // 본명
+    private String phoneNumber; // 전화번호도 입력하도록 만들기!
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL) // 사용자가 작성한 게시글 (1:N 관계)
     private List<Post> posts;
 
@@ -41,6 +44,13 @@ public class User {
 
     public List<Comment> getComments() { return comments; }
     public void setComments(List<Comment> comments) { this.comments = comments; }
+
+    public String getRealName() { return realName; }
+    public void setRealName(String realName) { this.realName = realName; }
+
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
 
     // 포인트 추가 메서드
     public void addPoints(int amount) {
