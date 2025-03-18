@@ -13,7 +13,6 @@ public class Post {
     private Long id;
     private String title;
     private String content;
-    private int likes;
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
@@ -29,8 +28,6 @@ public class Post {
     public void setTitle(String title) { this.title = title; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
-    public int getLikes() { return likes; }
-    public void setLikes(int likes) { this.likes = likes; }
     public User getAuthor() { return author; }
     public void setAuthor(User author) { this.author = author; }
     public List<Comment> getComments() { return comments; }
