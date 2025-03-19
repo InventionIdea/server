@@ -1,4 +1,4 @@
-package iakka.platform.security;
+package iakka.platform.jwt;
 
 import iakka.platform.domain.user.entity.User;
 import iakka.platform.domain.user.repository.UserRepository;

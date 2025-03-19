@@ -1,4 +1,4 @@
-package iakka.platform.security;
+package iakka.platform.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

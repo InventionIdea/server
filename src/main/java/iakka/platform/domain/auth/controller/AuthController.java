@@ -4,7 +4,7 @@ import iakka.platform.domain.auth.dto.LoginRequest;
 import iakka.platform.domain.auth.dto.RegisterRequest;
 import iakka.platform.domain.user.entity.User;
 import iakka.platform.domain.user.repository.UserRepository;
-import iakka.platform.security.JwtUtil;
+import iakka.platform.jwt.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

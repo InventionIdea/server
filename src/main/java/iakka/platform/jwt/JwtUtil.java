@@ -1,4 +1,4 @@
-package iakka.platform.security;
+package iakka.platform.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
