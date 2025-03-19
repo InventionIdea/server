@@ -1,6 +1,6 @@
-package iakka.platform.domain.like.controller;
+package iakka.platform.domain.like.post.controller;
 
-import iakka.platform.domain.like.service.PostLikeService;
+import iakka.platform.domain.like.post.service.PostLikeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

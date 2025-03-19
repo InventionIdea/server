@@ -1,7 +1,7 @@
-package iakka.platform.domain.like.service;
+package iakka.platform.domain.like.post.service;
 
-import iakka.platform.domain.like.entity.PostLike;
-import iakka.platform.domain.like.repository.PostLikeRepository;
+import iakka.platform.domain.like.post.entity.PostLike;
+import iakka.platform.domain.like.post.repository.PostLikeRepository;
 import iakka.platform.domain.post.entity.Post;
 import iakka.platform.domain.post.repository.PostRepository;
 import iakka.platform.domain.user.entity.User;

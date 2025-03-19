@@ -1,4 +1,4 @@
-package iakka.platform.domain.like.entity;
+package iakka.platform.domain.like.post.entity;
 
 import iakka.platform.domain.post.entity.Post;
 import iakka.platform.domain.user.entity.User;

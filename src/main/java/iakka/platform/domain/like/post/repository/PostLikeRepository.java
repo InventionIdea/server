@@ -1,6 +1,6 @@
-package iakka.platform.domain.like.repository;
+package iakka.platform.domain.like.post.repository;
 
-import iakka.platform.domain.like.entity.PostLike;
+import iakka.platform.domain.like.post.entity.PostLike;
 import iakka.platform.domain.post.entity.Post;
 import iakka.platform.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
