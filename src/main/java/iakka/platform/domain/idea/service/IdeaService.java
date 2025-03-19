@@ -43,13 +43,15 @@ public class IdeaService {
 
     public boolean updateFileId(String userId, String title, String fileId) {
         List<Idea> ideas = ideaRepository.findByUserIdAndTitle(userId, title);
-        if (!ideas.isEmpty()) {
-            ideas.forEach(idea -> {
+        boolean updated = false;
+
+        for (Idea idea : ideas) {
+            if (idea.getFileId() == null) { // fileId가 null인 경우에만 업데이트
                 idea.setFileId(fileId);
                 ideaRepository.save(idea);
-            });
-            return true;
+                updated = true;
+            }
         }
-        return false;
+        return updated;
     }
 }
