@@ -16,18 +16,14 @@ public class Idea {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 1000)
-    private String script;
-
     @Column
     private String fileId;
 
     public Idea() {}
 
-    public Idea(String userId, String title, String script, String fileId) {
+    public Idea(String userId, String title, String fileId) {
         this.userId = userId;
         this.title = title;
-        this.script = script;
         this.fileId = fileId;
     }
 
@@ -49,14 +45,6 @@ public class Idea {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getScript() {
-        return script;
-    }
-
-    public void setScript(String script) {
-        this.script = script;
     }
 
     public String getFileId() {

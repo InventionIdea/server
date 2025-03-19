@@ -25,7 +25,7 @@ public class IdeaService {
     }
 
     public Mono<Idea> generateVideo(String userId, String title, List<String> script) {
-        Idea idea = new Idea(userId, title, String.join(" ", script), null);
+        Idea idea = new Idea(userId, title, null);
         ideaRepository.save(idea);
 
         return webClient.post()
@@ -39,6 +39,7 @@ public class IdeaService {
                 })
                 .map(response -> idea);
     }
+
 
     public boolean updateFileId(String userId, String title, String fileId) {
         List<Idea> ideas = ideaRepository.findByUserIdAndTitle(userId, title);
