@@ -7,6 +7,7 @@ import iakka.platform.domain.user.repository.UserRepository;
 import iakka.platform.jwt.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,14 +33,19 @@ public class AuthController {
         this.userDetailsService = userDetailsService;
     }
 
-    // 회원가입 (비밀번호 암호화 후 저장)
+    // 회원가입 (userId 추가)
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+        if (userRepository.findByUserId(request.getUserId()).isPresent()) {
+            return ResponseEntity.badRequest().body("UserId already exists");
+        }
+
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
 
         User newUser = new User();
+        newUser.setUserId(request.getUserId()); // userId 저장
         newUser.setUsername(request.getUsername());
         newUser.setPassword(passwordEncoder.encode(request.getPassword())); // 비밀번호 암호화
         newUser.setRealName(request.getRealName());
@@ -50,15 +56,19 @@ public class AuthController {
         return ResponseEntity.ok("User registered successfully");
     }
 
-    // 로그인 (JWT 발급)
+    // 로그인 (userId 기반)
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUserId(), request.getPassword()));
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-        String token = jwtUtil.generateToken(userDetails.getUsername());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUserId());
+            String token = jwtUtil.generateToken(userDetails.getUsername()); // userId 기반으로 토큰 생성
 
-        return ResponseEntity.ok(token);
+            return ResponseEntity.ok(token);
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
     }
 }
