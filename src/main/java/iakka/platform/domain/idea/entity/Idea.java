@@ -31,6 +31,11 @@ public class Idea {
         return id;
     }
 
+    //test용 setter 추가
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getUserId() {
         return userId;
     }
