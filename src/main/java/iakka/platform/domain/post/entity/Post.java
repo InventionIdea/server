@@ -5,6 +5,10 @@ import iakka.platform.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "posts")
@@ -23,7 +27,11 @@ public class Post {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    // @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    // private List<Comment> comments;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    private int views = 0;
 }
