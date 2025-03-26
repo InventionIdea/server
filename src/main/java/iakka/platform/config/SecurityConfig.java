@@ -32,7 +32,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register").permitAll() // ✅ 로그인 & 회원가입 허용
+                        .requestMatchers("/auth/login", "/auth/register").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/ideas/**").permitAll()
                         .requestMatchers("/ws/**", "/topic/**", "/app/**").permitAll()
                         .anyRequest().authenticated()
