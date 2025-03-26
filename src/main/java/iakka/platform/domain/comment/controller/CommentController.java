@@ -24,4 +24,15 @@ public class CommentController {
                                          @PathVariable Long targetId) {
         return commentService.getComments(type, targetId);
     }
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId,
+                                           @RequestBody CommentRequest request) {
+        return commentService.updateComment(commentId, request);
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
+        return commentService.deleteComment(commentId);
+    }
 }

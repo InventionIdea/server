@@ -43,4 +43,21 @@ public class CommentService {
     public ResponseEntity<List<Comment>> getComments(CommentType type, Long targetId) {
         return ResponseEntity.ok(commentRepository.findByTypeAndTargetIdAndParentCommentIsNull(type, targetId));
     }
+
+    public ResponseEntity<?> updateComment(Long commentId, CommentRequest request) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("Comment not found"));
+
+        comment.setContent(request.getContent());
+        return ResponseEntity.ok(commentRepository.save(comment));
+    }
+
+    public ResponseEntity<?> deleteComment(Long commentId) {
+        if (!commentRepository.existsById(commentId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        commentRepository.deleteById(commentId);
+        return ResponseEntity.ok("Comment deleted successfully");
+    }
 }

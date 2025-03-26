@@ -47,4 +47,40 @@ class CommentServiceTest {
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         verify(commentRepository, times(1)).save(any(Comment.class));
     }
+
+    @Test
+    @DisplayName("댓글 수정 로직 테스트")
+    void updateComment_shouldUpdateContent() {
+        Long commentId = 1L;
+
+        CommentRequest request = new CommentRequest();
+        request.setContent("수정된 내용");
+
+        Comment comment = new Comment();
+        comment.setId(commentId);
+        comment.setContent("원래 내용");
+
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
+        when(commentRepository.save(any(Comment.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var response = commentService.updateComment(commentId, request);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(comment.getContent()).isEqualTo("수정된 내용");
+        verify(commentRepository).save(comment);
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 로직 테스트")
+    void deleteComment_shouldRemove() {
+        Long commentId = 1L;
+
+        when(commentRepository.existsById(commentId)).thenReturn(true);
+        doNothing().when(commentRepository).deleteById(commentId);
+
+        var response = commentService.deleteComment(commentId);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        verify(commentRepository, times(1)).deleteById(commentId);
+    }
 }

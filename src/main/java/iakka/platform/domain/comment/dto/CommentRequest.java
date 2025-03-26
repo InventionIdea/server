@@ -5,6 +5,8 @@ import iakka.platform.domain.comment.entity.Comment.CommentType;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class CommentRequest {
@@ -22,4 +24,7 @@ public class CommentRequest {
 
     @JsonProperty("content")
     private String content;
+
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt;
 }
