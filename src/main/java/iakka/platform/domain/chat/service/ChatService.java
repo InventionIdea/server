@@ -2,7 +2,7 @@ package iakka.platform.domain.chat.service;
 
 import iakka.platform.domain.chat.dto.ChatMessageDto;
 import iakka.platform.domain.chat.entity.ChatMessage;
-import iakka.platform.domain.chat.request.ChatMessageRepository;
+import iakka.platform.domain.chat.repository.ChatMessageRepository;
 import iakka.platform.domain.crew.entity.Crew;
 import iakka.platform.domain.crew.repository.CrewRepository;
 import iakka.platform.domain.user.entity.User;
