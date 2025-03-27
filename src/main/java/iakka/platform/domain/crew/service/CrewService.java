@@ -41,4 +41,26 @@ public class CrewService {
         member.setCrew(crew);
         crewMemberRepository.save(member);
     }
+
+    @Transactional
+    public void leaveCrew(Long userId, Long crewId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("Crew not found"));
+
+        CrewMember crewMember = crewMemberRepository.findByUserAndCrew(user, crew)
+                .orElseThrow(() -> new RuntimeException("User is not a member of this crew"));
+
+        crewMemberRepository.delete(crewMember);
+    }
+
+    // the function to update the crew name
+    public Crew updateCrew(Long crewId, CrewRequest request) {
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("Crew not found"));
+        crew.setName(request.getName());
+        crew.setDescription(request.getDescription());
+        return crewRepository.save(crew);
+    }
 }
