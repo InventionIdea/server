@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IdeaService {
@@ -53,5 +54,14 @@ public class IdeaService {
             }
         }
         return updated;
+    }
+
+    public boolean deleteIdeaById(Long ideaId) {
+        Optional<Idea> idea = ideaRepository.findById(ideaId);
+        if (idea.isPresent()) {
+            ideaRepository.deleteById(ideaId);
+            return true;
+        }
+        return false;
     }
 }

@@ -42,4 +42,14 @@ public class IdeaController {
             return ResponseEntity.badRequest().body("Failed to update File ID.");
         }
     }
+
+    @DeleteMapping("/{ideaId}")
+    public ResponseEntity<String> deleteIdea(@PathVariable Long ideaId) {
+        boolean deleted = ideaService.deleteIdeaById(ideaId);
+        if (deleted) {
+            return ResponseEntity.ok("Idea deleted successfully.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

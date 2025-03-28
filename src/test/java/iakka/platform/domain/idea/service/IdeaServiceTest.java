@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -71,5 +72,70 @@ class IdeaServiceTest {
         assertEquals(userId, result.getUserId());
         assertEquals(title, result.getTitle());
         assertEquals("video-url", result.getFileId());
+    }
+
+    @Test
+    void 파일ID_업데이트_성공() {
+        String userId = "user1";
+        String title = "아이디어 제목";
+        String fileId = "file-999";
+
+        Idea idea1 = new Idea(userId, title, null); // fileId가 null → 업데이트 대상
+        Idea idea2 = new Idea(userId, title, "file-111"); // 이미 fileId 있음 → 무시
+
+        List<Idea> ideas = Arrays.asList(idea1, idea2);
+        when(ideaRepository.findByUserIdAndTitle(userId, title)).thenReturn(ideas);
+        when(ideaRepository.save(any(Idea.class))).thenReturn(idea1);
+
+        boolean result = ideaService.updateFileId(userId, title, fileId);
+
+        assertTrue(result);
+        assertEquals(fileId, idea1.getFileId());
+        verify(ideaRepository, times(1)).save(idea1);
+        verify(ideaRepository, never()).save(idea2); // 이미 fileId 있음
+    }
+
+    @Test
+    void 파일ID_업데이트_실패() {
+        String userId = "user1";
+        String title = "아이디어 제목";
+        String fileId = "file-999";
+
+        // 모든 아이디어가 이미 fileId를 가지고 있음
+        Idea idea1 = new Idea(userId, title, "file-123");
+        Idea idea2 = new Idea(userId, title, "file-456");
+
+        when(ideaRepository.findByUserIdAndTitle(userId, title))
+                .thenReturn(List.of(idea1, idea2));
+
+        boolean result = ideaService.updateFileId(userId, title, fileId);
+
+        assertFalse(result);
+        verify(ideaRepository, never()).save(any());
+    }
+
+    @Test
+    void 아이디어_삭제_성공() {
+        Long ideaId = 1L;
+        Idea idea = new Idea("user1", "제목", "file-1");
+
+        when(ideaRepository.findById(ideaId)).thenReturn(Optional.of(idea));
+
+        boolean result = ideaService.deleteIdeaById(ideaId);
+
+        assertTrue(result);
+        verify(ideaRepository).deleteById(ideaId);
+    }
+
+    @Test
+    void 아이디어_삭제_실패() {
+        Long ideaId = 999L;
+
+        when(ideaRepository.findById(ideaId)).thenReturn(Optional.empty());
+
+        boolean result = ideaService.deleteIdeaById(ideaId);
+
+        assertFalse(result);
+        verify(ideaRepository, never()).deleteById(any());
     }
 }

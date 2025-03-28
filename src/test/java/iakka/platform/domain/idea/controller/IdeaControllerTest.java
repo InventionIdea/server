@@ -1,6 +1,7 @@
 package iakka.platform.domain.idea.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import iakka.platform.config.TestSecurityConfig;
 import iakka.platform.domain.idea.dto.FileUpdateRequest;
 import iakka.platform.domain.idea.dto.IdeaRequest;
 import iakka.platform.domain.idea.entity.Idea;
@@ -11,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import reactor.core.publisher.Mono;
@@ -18,10 +20,10 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Import(TestSecurityConfig.class)
 @WebMvcTest(IdeaController.class)
 class IdeaControllerTest {
 
@@ -40,7 +42,9 @@ class IdeaControllerTest {
         IdeaRequest request = new IdeaRequest("user1", "타이틀", List.of("스크립트1", "스크립트2"));
         Idea mockIdea = new Idea("user1", "타이틀", "video-url");
 
-        when(ideaService.generateVideo(any(), any(), any())).thenReturn(Mono.just(mockIdea));
+        // generateVideo이 Mono<Idea>를 반환하더라도, block()해서 동기 반환할 예정
+        Mockito.when(ideaService.generateVideo(any(), any(), any()))
+                .thenReturn(Mono.just(mockIdea));
 
         mockMvc.perform(post("/ideas/generate")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -55,7 +59,7 @@ class IdeaControllerTest {
     @DisplayName("아이디어_목록_조회")
     void 아이디어_목록_조회() throws Exception {
         List<Idea> mockList = List.of(new Idea("user1", "테스트 제목", "file-1"));
-        when(ideaService.getIdeasByUserId("user1")).thenReturn(mockList);
+        Mockito.when(ideaService.getIdeasByUserId("user1")).thenReturn(mockList);
 
         mockMvc.perform(get("/ideas/list/user1"))
                 .andExpect(status().isOk())
@@ -68,7 +72,7 @@ class IdeaControllerTest {
     @DisplayName("파일ID_업데이트")
     void 파일ID_업데이트() throws Exception {
         FileUpdateRequest request = new FileUpdateRequest("user1", "타이틀", "file-999");
-        when(ideaService.updateFileId("user1", "타이틀", "file-999")).thenReturn(true);
+        Mockito.when(ideaService.updateFileId("user1", "타이틀", "file-999")).thenReturn(true);
 
         mockMvc.perform(post("/ideas/update-file-id")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -81,12 +85,33 @@ class IdeaControllerTest {
     @DisplayName("파일ID_업데이트_실패")
     void 파일ID_업데이트_실패() throws Exception {
         FileUpdateRequest request = new FileUpdateRequest("user1", "타이틀", "file-999");
-        when(ideaService.updateFileId("user1", "타이틀", "file-999")).thenReturn(false);
+        Mockito.when(ideaService.updateFileId("user1", "타이틀", "file-999")).thenReturn(false);
 
         mockMvc.perform(post("/ideas/update-file-id")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Failed to update File ID."));
+    }
+
+    @Test
+    @DisplayName("아이디어_삭제_성공")
+    void 아이디어_삭제_성공() throws Exception {
+        Long ideaId = 1L;
+        Mockito.when(ideaService.deleteIdeaById(ideaId)).thenReturn(true);
+
+        mockMvc.perform(delete("/ideas/{ideaId}", ideaId))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Idea deleted successfully."));
+    }
+
+    @Test
+    @DisplayName("아이디어_삭제_실패")
+    void 아이디어_삭제_실패() throws Exception {
+        Long ideaId = 999L;
+        Mockito.when(ideaService.deleteIdeaById(ideaId)).thenReturn(false);
+
+        mockMvc.perform(delete("/ideas/{ideaId}", ideaId))
+                .andExpect(status().isNotFound());
     }
 }
