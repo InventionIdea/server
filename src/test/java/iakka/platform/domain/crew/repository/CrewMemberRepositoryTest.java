@@ -106,4 +106,30 @@ class CrewMemberRepositoryTest {
         Optional<CrewMember> result = crewMemberRepository.findByUserAndCrew(user, crew);
         assertFalse(result.isPresent());
     }
+
+    @Test
+    @DisplayName("크루에 속한 멤버 수 확인")
+    void countByCrew_정상동작() {
+        User user = new User();
+        user.setUsername("tester");
+        user.setPassword("testpass");
+        user.setUserId("tester01");
+        user.setPhoneNumber("010-1234-5678");
+        user.setRealName("테스트유저");
+        user.setPoints(0);
+        em.persist(user);
+
+        Crew crew = new Crew();
+        crew.setName("Crew A");
+        em.persist(crew);
+
+        CrewMember member = new CrewMember();
+        member.setUser(user);
+        member.setCrew(crew);
+        em.persist(member);
+
+        long count = crewMemberRepository.countByCrew(crew);
+
+        assertEquals(1L, count);
+    }
 }

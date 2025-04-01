@@ -40,13 +40,17 @@ class CrewServiceTest {
         saved.setName("테스트 크루");
         saved.setDescription("테스트 설명");
 
-        when(crewRepository.save(any(Crew.class))).thenReturn(saved);
+        User user = new User();
+        user.setId(1L);
 
-        Crew result = crewService.createCrew(request);
+        when(crewRepository.save(any(Crew.class))).thenReturn(saved);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        Crew result = crewService.createCrew(request, 1L);
 
         assertEquals("테스트 크루", result.getName());
         assertEquals("테스트 설명", result.getDescription());
-        verify(crewRepository, times(1)).save(any(Crew.class));
+        verify(crewMemberRepository).save(any(CrewMember.class));
     }
 
     @Test
@@ -139,5 +143,28 @@ class CrewServiceTest {
                 crewService.leaveCrew(2L, 1L));
 
         assertEquals("User is not a member of this crew", ex.getMessage());
+    }
+
+    @Test
+    void 마지막_멤버_탈퇴시_크루_삭제된다() {
+        User user = new User();
+        user.setId(2L);
+
+        Crew crew = new Crew();
+        crew.setId(1L);
+
+        CrewMember member = new CrewMember();
+        member.setUser(user);
+        member.setCrew(crew);
+
+        when(userRepository.findById(2L)).thenReturn(Optional.of(user));
+        when(crewRepository.findById(1L)).thenReturn(Optional.of(crew));
+        when(crewMemberRepository.findByUserAndCrew(user, crew)).thenReturn(Optional.of(member));
+        when(crewMemberRepository.countByCrew(crew)).thenReturn(0L); // 마지막 멤버
+
+        crewService.leaveCrew(2L, 1L);
+
+        verify(crewMemberRepository).delete(member);
+        verify(crewRepository).delete(crew);
     }
 }

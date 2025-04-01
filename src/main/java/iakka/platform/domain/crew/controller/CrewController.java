@@ -3,8 +3,12 @@ package iakka.platform.domain.crew.controller;
 import iakka.platform.domain.crew.dto.CrewRequest;
 import iakka.platform.domain.crew.service.CrewService;
 import iakka.platform.domain.crew.entity.Crew;
+import iakka.platform.domain.user.entity.User;
+import iakka.platform.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,10 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CrewController {
     private final CrewService crewService;
+    private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<Crew> createCrew(@RequestBody CrewRequest request) {
-        Crew crew = crewService.createCrew(request);
+    public ResponseEntity<Crew> createCrew(@RequestBody CrewRequest request,
+                                           @AuthenticationPrincipal UserDetails currentUser) {
+        User user = userRepository.findByUserId(currentUser.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Crew crew = crewService.createCrew(request, user.getId());
         return ResponseEntity.ok(crew);
     }
 

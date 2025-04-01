@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import iakka.platform.domain.crew.dto.CrewRequest;
 import iakka.platform.domain.crew.entity.Crew;
 import iakka.platform.domain.crew.service.CrewService;
+import iakka.platform.domain.user.entity.User;
+import iakka.platform.domain.user.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,6 +16,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -31,8 +36,21 @@ class CrewControllerTest {
     @MockBean
     private CrewService crewService;
 
+    @MockBean
+    private UserRepository userRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setup() {
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setUserId("tester");
+
+        when(userRepository.findByUserId("tester"))
+                .thenReturn(Optional.of(mockUser));
+    }
 
     @Test
     @DisplayName("크루 생성 API 테스트")
@@ -45,7 +63,7 @@ class CrewControllerTest {
         responseCrew.setName("테스트 크루");
         responseCrew.setDescription("테스트 설명");
 
-        when(crewService.createCrew(any(CrewRequest.class))).thenReturn(responseCrew);
+        when(crewService.createCrew(any(CrewRequest.class), anyLong())).thenReturn(responseCrew);
 
         mockMvc.perform(post("/crews")
                         .with(csrf())
