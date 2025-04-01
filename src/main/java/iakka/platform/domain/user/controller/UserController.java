@@ -4,7 +4,10 @@ import iakka.platform.domain.user.dto.UserDto;
 import iakka.platform.domain.user.entity.User;
 import iakka.platform.domain.user.service.UserService;
 import iakka.platform.domain.user.service.UserPointService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,5 +43,16 @@ public class UserController {
     @GetMapping("/{userId}/points")
     public ResponseEntity<Integer> getPoints(@PathVariable Long userId) {
         return ResponseEntity.ok(userPointService.getPoints(userId));
+    }
+
+    // 사용자 계정 삭제
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId,
+                                           @AuthenticationPrincipal UserDetails currentUser) {
+        if (!userService.isCurrentUser(userId, currentUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        userService.deleteUserById(userId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -5,6 +5,7 @@ import iakka.platform.domain.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,5 +53,33 @@ public class UserControllerTest {
         ResponseEntity<Integer> response = userController.getPoints(1L);
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(500, response.getBody());
+    }
+
+    @Test
+    public void 사용자_본인이_요청하면_삭제된다() {
+        Long userId = 1L;
+        UserDetails currentUser = mock(UserDetails.class);
+        when(currentUser.getUsername()).thenReturn("user1");
+
+        when(userService.isCurrentUser(userId, currentUser)).thenReturn(true);
+
+        ResponseEntity<Void> response = userController.deleteUser(userId, currentUser);
+
+        assertEquals(204, response.getStatusCodeValue());
+        verify(userService).deleteUserById(userId);
+    }
+
+    @Test
+    public void 본인이_아닌_경우_삭제_거부된다() {
+        Long userId = 1L;
+        UserDetails currentUser = mock(UserDetails.class);
+        when(currentUser.getUsername()).thenReturn("hacker");
+
+        when(userService.isCurrentUser(userId, currentUser)).thenReturn(false);
+
+        ResponseEntity<Void> response = userController.deleteUser(userId, currentUser);
+
+        assertEquals(403, response.getStatusCodeValue());
+        verify(userService, never()).deleteUserById(userId);
     }
 }

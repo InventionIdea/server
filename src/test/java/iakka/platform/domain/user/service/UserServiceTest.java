@@ -4,6 +4,7 @@ import iakka.platform.domain.user.entity.User;
 import iakka.platform.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -50,5 +51,35 @@ public class UserServiceTest {
         User found = userService.getUserByUserId("user2");
 
         assertEquals("user2", found.getUserId());
+    }
+
+    @Test
+    public void 현재_유저가_본인이면_true() {
+        User user = new User();
+        user.setId(1L);
+        user.setUserId("user123");
+
+        UserDetails currentUser = mock(UserDetails.class);
+        when(currentUser.getUsername()).thenReturn("user123");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        boolean result = userService.isCurrentUser(1L, currentUser);
+        assertTrue(result);
+    }
+
+    @Test
+    public void 현재_유저가_다르면_false() {
+        User user = new User();
+        user.setId(1L);
+        user.setUserId("user456");
+
+        UserDetails currentUser = mock(UserDetails.class);
+        when(currentUser.getUsername()).thenReturn("hacker");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        boolean result = userService.isCurrentUser(1L, currentUser);
+        assertFalse(result);
     }
 }
