@@ -1,82 +1,96 @@
-## ✅ 다음 업데이트 예정
-- 크투 톡방 기능 (웹소켓 문제 해결해야 함)
-- 트렌드? 기능 추가
-- entity명을 통일할 필요가 있어보임;;;
+# 기술 스택
 
-## 🚀 업데이트 내역 (2025-03-23)
+### 🧱 Backend
 
-- 전체 기능에 대한 test 코드 작성
-- ERD 작성
+- **Language**: Java 17
+- **Framework**: Spring Boot 3.4.2
+- **Build Tool**: Gradle
+- **Database**: PostgreSQL
+- **ORM**: Spring Data JPA
+- **Security**: Spring Security + JWT
 
-## 🚀 업데이트 내역 (2025-03-20)
+### 🧪 Test
 
-- 로그인 방식 변경
-  - username -> userId
-- user와 auth 도메인에 대한 test 코드 작성
+- **In-memory DB**: H2
+- **Test Frameworks**: JUnit 5, Spring Security Test
 
-## 🚀 업데이트 내역 (2025-03-19)
+### 🔧 기타
 
-- comment 기능 추가 (idea와 post 도메인 각각 생성)
-- idea 도메인 정리
-- 중복된 아이디어에 대한 file ID 업데이트 문제 해결
-- like 기능 추가 (idea와 post 각각)
+- **Lombok**: 반복 코드 제거
 
-## 🚀 업데이트 내역 (2025-03-18)
 
-- jwt방식으로 변경
-- 전체 파일 domain 기준으로 리팩토링
-- user 및 auth 도메인 코드 정리
-- 크루 기능 추가
-- 크루 톡방 기능은 에러 있음
+# ERD 다이어그램
 
-## 🚀 업데이트 내역 (2025-03-17)
+![img.png](docs/erd.png)
 
-- refactor: security config 파일 위치 조정
-- fast api와 통신 문제 해결
-  - 그러나 같은 user가 같은 대본으로 요청을 한다면 기존 파일도 file id가 변경된다는 문제가 있었음, 이에 대한 문제를 해결하기 위해 ID를 기준으로 업데이트 하는 방식으로 변경해줘야 할 것 같음.
+# API 문서
 
-## 🚀 업데이트 내역 (2025-03-16)
+## 📝 Post 관련 (post-controller)
 
-- 포인트 시스템 구현
-- refactor: auth controller -> user controller
+| Method | Endpoint                          | 설명              | 요청 파라미터                        | Body           |
+|--------|-----------------------------------|-------------------|--------------------------------------|----------------|
+| GET    | `/posts`                          | 게시글 전체 조회   | 없음                                 | ❌              |
+| POST   | `/posts`                          | 게시글 생성        | 없음                                 | ✅ PostRequest  |
+| PUT    | `/posts/{id}`                     | 게시글 수정        | `id` (path)                          | ✅ PostRequest  |
+| DELETE | `/posts/{id}`                     | 게시글 삭제        | `id` (path), `authorId` (query)      | ❌              |
+| GET    | `/posts/user/{userId}`            | 특정 유저의 게시글 | `userId` (path)                      | ❌              |
+| GET    | `/posts/search`                   | 게시글 검색        | `keyword` (query)                    | ❌              |
 
-## 🚀 업데이트 내역 (2025-03-15)
+## 💬 Comment 관련 (comment-controller)
 
-- 좋아요 기능 구현
-- 사용자별 게시글 목록 조회
-- 게시글 검색기능 구현
+| Method | Endpoint                              | 설명            | 요청 파라미터                                 | Body             |
+|--------|---------------------------------------|------------------|-----------------------------------------------|------------------|
+| POST   | `/comments`                           | 댓글 생성         | 없음                                          | ✅ CommentRequest |
+| PUT    | `/comments/{commentId}`               | 댓글 수정         | `commentId` (path)                            | ✅ CommentRequest |
+| DELETE | `/comments/{commentId}`               | 댓글 삭제         | `commentId` (path)                            | ❌                |
+| GET    | `/comments/{type}/{targetId}`         | 댓글 조회         | `type`, `targetId` (path)                     | ❌                |
 
-## 🚀 업데이트 내역 (2025-03-13)
+## ❤️ Like 관련 (like-controller)
 
-### 🔹 댓글(Comment) 기능
-- 대댓글 작성 (`POST /comments`)
-- 특정 댓글의 대댓글 조회 (`GET /comments/{commentId}/replies`)
-- 댓글 삭제 시 대댓글 함께 삭제 (`DELETE /comments/{id}?authorId={authorId}`)
+| Method | Endpoint                                 | 설명              | 요청 파라미터                                      | Body   |
+|--------|------------------------------------------|-------------------|----------------------------------------------------|--------|
+| POST   | `/likes/{type}/{targetId}`               | 좋아요 등록        | `type`, `targetId` (path)                          | ✅ User |
+| DELETE | `/likes/{type}/{targetId}`               | 좋아요 취소        | `type`, `targetId` (path)                          | ✅ User |
+| GET    | `/likes/{type}/{targetId}/liked`         | 좋아요 여부 확인    | `type`, `targetId` (path), `user` (query)          | ❌      |
+| GET    | `/likes/{type}/{targetId}/count`         | 좋아요 수 조회      | `type`, `targetId` (path)                          | ❌      |
 
-### 🔹 API 개선
-- 댓글 조회 시 부모 댓글과 대댓글 분리 제공
-- API 응답 형식 개선 및 오류 메시지 명확화
+## 👥 Crew 관련 (crew-controller)
 
-## 🚀 업데이트 내역 (2025-03-13)
+| Method | Endpoint                                 | 설명               | 요청 파라미터                               | Body            |
+|--------|------------------------------------------|--------------------|---------------------------------------------|-----------------|
+| POST   | `/crews`                                 | 크루 생성           | 없음                                        | ✅ CrewRequest   |
+| PUT    | `/crews/{crewId}`                        | 크루 정보 수정       | `crewId` (path)                             | ✅ CrewRequest   |
+| POST   | `/crews/{crewId}/join/{userId}`          | 크루 가입            | `crewId`, `userId` (path)                   | ❌               |
+| POST   | `/crews/{crewId}/leave/{userId}`         | 크루 탈퇴            | `crewId`, `userId` (path)                   | ❌               |
 
-### 🔹 게시글(Post) 기능
-- 게시글 수정 (`PUT /posts/{id}`)
-- 게시글 삭제 (`DELETE /posts/{id}?authorId={authorId}`)
+## 💡 Idea 관련 (idea-controller)
 
-### 🔹 댓글(Comment) 기능
-- 댓글 수정 (`PUT /comments/{id}`)
-- 댓글 삭제 (`DELETE /comments/{id}?authorId={authorId}`)
+| Method | Endpoint                          | 설명                   | 요청 파라미터              | Body               |
+|--------|-----------------------------------|------------------------|-----------------------------|--------------------|
+| POST   | `/ideas/generate`                 | 아이디어 영상 생성      | 없음                        | ✅ IdeaRequest      |
+| POST   | `/ideas/update-file-id`           | 아이디어 파일 ID 수정   | 없음                        | ✅ FileUpdateRequest|
+| GET    | `/ideas/list/{userId}`            | 사용자 아이디어 조회    | `userId` (path)             | ❌                  |
+| DELETE | `/ideas/{ideaId}`                 | 아이디어 삭제           | `ideaId` (path)             | ❌                  |
 
-## 🚀 업데이트 내역 (2025-02-16)
+## 👤 User 관련 (user-controller)
 
-### 🔹 사용자(User) 기능
-- 사용자 회원가입 (`POST /auth/register`)
+| Method | Endpoint                              | 설명               | 요청 파라미터                           | Body  |
+|--------|---------------------------------------|--------------------|-----------------------------------------|--------|
+| GET    | `/users/{userId}/points`              | 포인트 조회         | `userId` (path)                         | ❌      |
+| POST   | `/users/{userId}/points/add`          | 포인트 추가         | `userId` (path), `amount` (query)       | ❌      |
+| POST   | `/users/{userId}/points/deduct`       | 포인트 차감         | `userId` (path), `amount` (query)       | ❌      |
+| DELETE | `/users/{userId}`                     | 사용자 삭제         | `userId` (path)                         | ❌      |
 
-### 🔹 게시글(Post) 기능
-- 게시글 작성 (`POST /posts`)
-- 게시글 조회 (`GET /posts`)
-- 게시글 좋아요 (`POST /posts/{id}/like`)
+## 🔐 Auth 관련 (auth-controller)
 
-### 🔹 댓글(Comment) 기능
-- 댓글 작성 (`POST /comments`)
-- 특정 게시글의 댓글 조회 (`GET /comments?postId={id}`)
+| Method | Endpoint           | 설명       | 요청 파라미터 | Body             |
+|--------|--------------------|------------|----------------|------------------|
+| POST   | `/auth/register`   | 회원가입    | 없음           | ✅ RegisterRequest|
+| POST   | `/auth/login`      | 로그인      | 없음           | ✅ LoginRequest   |
+
+## 📊 Trend 관련 (trend-controller)
+
+| Method | Endpoint       | 설명           | 요청 파라미터 | Body |
+|--------|----------------|----------------|----------------|------|
+| GET    | `/trend`       | 트렌드 조회     | 없음           | ❌    |
+
