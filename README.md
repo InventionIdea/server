@@ -21,7 +21,7 @@
 
 # ERD 다이어그램
 
-![img.png](docs/erd.png)
+![img.png](img/erd.png)
 
 # API 문서
 

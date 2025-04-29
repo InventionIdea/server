@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/platform_db
-    username: springuser
-    password: q1w2e3r4
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -14,5 +14,5 @@ spring:
     show-sql: true
 
 jwt:
-  secret: "h4G8vB9xL2dQ7yNkX3pZ6tPmW9JH2S3O48zA5B7fLKC="
+  secret: ${JWT_SECRET}
   expiration: 3600000
