@@ -67,4 +67,19 @@ video-api/credentials.json
 # Node (if frontend or tooling is added later)
 **/node_modules/
 
+# NetBeans (core-api)
+core-api/nbproject/private/
+core-api/nbbuild/
+core-api/dist/
+core-api/nbdist/
+core-api/.nb-gradle/
 
+# Python leftovers
+**/*.pyo
+
+# Editor: Sublime
+*.sublime-project
+*.sublime-workspace
+
+# Video API extra secret
+video-api/credentials_base64.txt
