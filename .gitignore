@@ -1,0 +1,70 @@
+# OS/Editor
+.DS_Store
+Thumbs.db
+.history/
+Desktop.ini
+.idea/
+.vscode/
+*.iml
+*.log
+*~
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Java / Gradle
+/.gradle/
+**/build/
+**/out/
+**/target/
+core-api/.gradle/
+core-api/build/
+core-api/out/
+core-api/target/
+
+# Spring secrets / certificates
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+.env*
+.envrc
+core-api/src/main/resources/application-local.yml
+core-api/src/test/resources/application-local.yml
+
+# Eclipse / STS
+.classpath
+.project
+.settings/
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+**/.mypy_cache/
+**/.venv/
+**/venv/
+.python-version
+**/.ruff_cache/
+**/dist/
+**/*.egg-info/
+**/pip-wheel-metadata/
+**/.coverage*
+**/coverage.xml
+**/htmlcov/
+
+# Video API virtualenv and artifacts
+video-api/venv/
+video-api/output/
+
+# Google API credentials/tokens (do NOT commit)
+video-api/token.json
+video-api/credentials.json
+
+
+# Node (if frontend or tooling is added later)
+**/node_modules/
+
+
