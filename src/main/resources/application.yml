@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate.default_schema: public
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 3600000
+
+cloud:
+  aws:
+    s3:
+      endpoint: ${R2_ENDPOINT}
+      bucket: ${R2_BUCKET}
+      public-url-base: ${R2_PUBLIC_URL_BASE:}  # Optional: Custom public URL base (e.g., https://your-domain.com)
+    credentials:
+      access-key: ${R2_ACCESS_KEY}
+      secret-key: ${R2_SECRET_KEY}
+    region:
+      static: auto
