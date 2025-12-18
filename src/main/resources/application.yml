@@ -1,13 +1,24 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    # Supabase connection URL
+    # For transaction pooler (recommended): jdbc:postgresql://[host]:6543/postgres?sslmode=require
+    # For session pooler: jdbc:postgresql://[host]:5432/postgres?sslmode=require
+    url: ${SUPABASE_URL}
+    username: ${SUPABASE_USER}
+    password: ${SUPABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      # Connection pool settings optimized for Supabase transaction pooling
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
 
   jpa:
     properties:
       hibernate.default_schema: public
+      hibernate.jdbc.time_zone: UTC
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
