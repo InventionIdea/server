@@ -1,7 +1,8 @@
-# OS/Editor
+# ============================================
+# OS / Editor
+# ============================================
 .DS_Store
 Thumbs.db
-.history/
 Desktop.ini
 .idea/
 .vscode/
@@ -12,74 +13,96 @@ Desktop.ini
 *.bak
 *.swp
 *.swo
+*.sublime-project
+*.sublime-workspace
 
-# Java / Gradle
-/.gradle/
-**/build/
-**/out/
-**/target/
-core-api/.gradle/
-core-api/build/
-core-api/out/
-core-api/target/
+# ============================================
+# Java / Gradle / Spring Boot
+# ============================================
+.gradle/
+build/
+out/
+bin/
+target/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
 
-# Spring secrets / certificates
+# ============================================
+# Environment Variables & Secrets
+# ============================================
+# Ignore .env files but keep .env.example
+.env
+.env.local
+.env.*.local
+.envrc
 *.jks
 *.keystore
 *.p12
 *.pem
 *.key
-.env*
-.envrc
-core-api/src/main/resources/application-local.yml
-core-api/src/test/resources/application-local.yml
 
-# Eclipse / STS
+# Local application config overrides
+src/main/resources/application-local.yml
+src/test/resources/application-local.yml
+
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+*.pyo
+*$py.class
+.Python
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.python-version
+dist/
+*.egg-info/
+pip-wheel-metadata/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# ============================================
+# Scripts Output & Generated Files
+# ============================================
+scripts/output/
+scripts/**/*.mp4
+scripts/**/*.png
+scripts/**/*.mp3
+scripts/**/*.jpg
+scripts/**/*.jpeg
+
+# ============================================
+# IDE / Editor Specific
+# ============================================
 .classpath
 .project
 .settings/
+.history/
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
 
-# Python
-**/__pycache__/
-**/*.pyc
-**/.pytest_cache/
-**/.mypy_cache/
-**/.venv/
-**/venv/
-.python-version
-**/.ruff_cache/
-**/dist/
-**/*.egg-info/
-**/pip-wheel-metadata/
-**/.coverage*
-**/coverage.xml
-**/htmlcov/
+# ============================================
+# Node.js (if frontend or tooling is added later)
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Video API virtualenv and artifacts
-video-api/venv/
-video-api/output/
-
-# Google API credentials/tokens (do NOT commit)
-video-api/token.json
-video-api/credentials.json
-
-
-# Node (if frontend or tooling is added later)
-**/node_modules/
-
-# NetBeans (core-api)
-core-api/nbproject/private/
-core-api/nbbuild/
-core-api/dist/
-core-api/nbdist/
-core-api/.nb-gradle/
-
-# Python leftovers
-**/*.pyo
-
-# Editor: Sublime
-*.sublime-project
-*.sublime-workspace
-
-# Video API extra secret
-video-api/credentials_base64.txt
+# ============================================
+# Google API Credentials (if needed in future)
+# ============================================
+token.json
+credentials.json
+credentials_base64.txt
