@@ -285,7 +285,7 @@ Content-Type: application/json
 
 실제로 생성된 영상을 확인해보세요:
 
-👉 **[예시 영상 보기 (Google Drive)](https://drive.google.com/your-video-link)**
+👉 **[예시 영상 보기 (Google Drive)](https://drive.google.com/drive/u/1/folders/1PtJFOMkW-ikjdzBVIKO5fqwReq91Mau8)**
 
 > 💡 **TIP**: 영상은 TTS 음성, AI 생성 이미지, 텍스트 오버레이, BGM이 자동으로 결합되어 생성됩니다.
 
